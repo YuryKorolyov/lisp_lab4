@@ -4,7 +4,7 @@
 "Функції вищого порядку та замикання"<br/>
 дисципліни "Вступ до функціонального програмування"
 </p>
-<p align="right"><b>Студент(-ка)</b>: Корольов Юрій Ігорович КВ-23</p>
+<p align="right"><b>Студент</b>: Корольов Юрій Ігорович КВ-23</p>
 <p align="right"><b>Рік</b>: 2025</p>
 
 ## Загальне завдання
@@ -123,4 +123,45 @@ passed test test (>)
         ;; Повертаємо результат
         result))))
 ```
+
+## Тестові набори
+
+```lisp
+(defun check-second-function (name input expected)
+  "Порівнює результат виконання із очікуваним."
+  (format t "~:[FAILED~;passed~] ~a~%"
+          (equal input expected)
+          name))
+
+(defun test-second-function ()
+  (format t "~%--- Testing Spinning Tuples (Variant 11) ---~%")
+  
+  ;; Приклад 1: крок 1 (за замовчуванням)
+  ;; Iter 0: (1 a) -> зсув 0 -> (1 a)
+  ;; Iter 1: (2 b) -> зсув 1 -> (b 2)
+  ;; Iter 2: (3 c) -> зсув 2 (mod 2 = 0) -> (3 c)
+  (check-second-function "test 1 (default step)" 
+                         (mapcar (merge-spinning-tuples-fn) 
+                                 '(1 2 3) '(a b c)) 
+                         '((1 A) (B 2) (3 C)))
+  
+  ;; Приклад 2: крок 2
+  ;; Iter 0: (a 1 d) -> зсув 0 -> (a 1 d)
+  ;; Iter 1: (b 2 e) -> зсув 2 -> (e b 2)
+  ;; Iter 2: (c 3 f) -> зсув 4 (mod 3 = 1) -> (3 f c)
+  (check-second-function "test 2 (step 2)" 
+                         (mapcar (merge-spinning-tuples-fn :shift-step 2) 
+                                 '(a b c) '(1 2 3) '(d e f)) 
+                         '((A 1 D) (E B 2) (3 F C))))
+```
+
+## Тестування
+```
+;;; Результат виконання (stdout):
+
+--- Testing Spinning Tuples (Variant 11) ---
+passed test 1 (default step)
+passed test 2 (step 2)
+```
+
 
