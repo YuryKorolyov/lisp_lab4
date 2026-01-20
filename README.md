@@ -4,7 +4,7 @@
 "Функції вищого порядку та замикання"<br/>
 дисципліни "Вступ до функціонального програмування"
 </p>
-<p align="right"><b>Студент(-ка)</b>: Прізвище Ім'я По-батькові Група</p>
+<p align="right"><b>Студент(-ка)</b>: Корольов Юрій Ігорович КВ-23</p>
 <p align="right"><b>Рік</b>: 2025</p>
 
 ## Загальне завдання
@@ -12,10 +12,10 @@
 1.  **Рефакторинг алгоритму сортування:** Переписати функціональну реалізацію алгоритму сортування з попередньої лабораторної роботи, використовуючи функції вищого порядку (HOF) для роботи з послідовностями. Додати підтримку ключових параметрів `key` та `test`, забезпечивши мінімальну кількість викликів функції `key` (кешування значення ключа).
 2.  **Робота із замиканнями:** Реалізувати функцію, що створює замикання, яке працює згідно із завданням за варіантом (обробка списків за допомогою `mapcar` зі збереженням стану між ітераціями).
 
-## Варіант першої частини
+## Частина 1.
 **Алгоритм сортування вибором (Selection Sort).**
 
-## Лістинг реалізації першої частини завдання
+## Лістинг реалізації
 ```lisp
 (defun extract-min (lst key test)
   "Знаходить мінімальний елемент і повертає:
@@ -51,3 +51,45 @@
      (multiple-value-bind (min-val rest-lst) (extract-min lst key test)
        (cons min-val 
              (selection-sort-func rest-lst :key key :test test))))))
+```
+
+# Лістинг тестових утиліт
+```lisp
+(defun check-first-function (name input expected)
+  "Виконує selection-sort-func на input, порівнює з expected і друкує статус."
+  (format t "~:[FAILED~;passed~] ~a~%"
+          (equal (selection-sort-func input) expected)
+          name))
+
+(defun test-first-function ()
+  (format t "~%--- Testing Selection Sort ---~%")
+  (check-first-function "test 1 (simple numbers)" '(5 3 4 1 2) '(1 2 3 4 5))  
+  (check-first-function "test 2 (already sorted)" '(1 2 3 4 5) '(1 2 3 4 5)) 
+  (check-first-function "test 3 (duplicates)" '(1 1 1 1 1) '(1 1 1 1 1))
+  (check-first-function "test 4 (mixed duplicates)" '(2 2 3 3 1) '(1 2 2 3 3))
+  (check-first-function "test 5 (empty)" nil nil)
+  
+  ;; Перевірка параметрів :key та :test
+  ;; Сортування списків за їх довжиною
+  (format t "~:[FAILED~;passed~] test key (length)~%"
+          (equal (selection-sort-func '((1 2 3) (1) (1 2)) :key #'length) 
+                 '((1) (1 2) (1 2 3))))
+  ;; Сортування за спаданням
+  (format t "~:[FAILED~;passed~] test test (>)"
+        (equal (selection-sort-func '(1 5 2 4) :test #'>) 
+               '(5 4 2 1))))
+```
+# Тестування
+
+;;; Результат виконання (stdout):
+
+```
+--- Testing Selection Sort ---
+passed test 1 (simple numbers)
+passed test 2 (already sorted)
+passed test 3 (duplicates)
+passed test 4 (mixed duplicates)
+passed test 5 (empty)
+passed test key (length)
+passed test test (>)
+```
